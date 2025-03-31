@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Registro de Ocorrências</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://i.imgur.com/SFByVp0.png" type="image/png">
+    <link rel="shortcut icon" href="https://i.imgur.com/SFByVp0.png" type="image/png">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #D8B143;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .logo {
+            width: 200px;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+        h1 {
+            text-align: center;
+            color: #D8B143;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .input-field {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        .input-field:focus {
+            border-color: #D8B143;
+            outline: none;
+        }
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .file-input-label {
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .file-input {
+            margin-top: 5px;
+            padding: 5px;
+        }
+        .select-field {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .add-product-btn, .remove-product-btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add-product-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .add-product-btn:hover {
+            background-color: #45a049;
+        }
+        .remove-product-btn {
+            background-color: #f8d7da;
+            color: #d9534f;
+            border: none;
+            padding: 6px 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+        .remove-product-btn:hover {
+            background-color: #f5c6cb;
+        }
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            gap: 5px;
+        }
+        .product-row select[name="produto[]"] {
+            width: 26%;
+        }
+        .product-row input[name="lote[]"] {
+            width: 12%;
+        }
+        .product-row input[name="fabricacao[]"],
+        .product-row input[name="vencimento[]"] {
+            width: 15%;
+        }
+        .product-row input[name="quantidade[]"] {
+            width: 22%;
+        }
+        #nota_fiscal {
+            width: 20%;
+        }
+        .motivo-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #motivoSelect {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        #motivoInput {
+            width: 85%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        .back-button {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .back-button:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://i.imgur.com/J5H7tkT.png" alt="Logo Moinho Régio" class="logo">
+    <div class="form-container">
+        <h1>REGISTRO DE OCORRÊNCIAS</h1>
+        <form id="ocorrenciaForm" onsubmit="submitForm(event)">
+            <!-- Representante -->
+            <div class="section">
+                <h2 class="section-title">Representante 👨‍💼</h2>
+                <div class="input-row">
+                    <input type="text" id="representante" name="representante" class="input-field" placeholder="NOME DO REPRESENTANTE" required oninput="capitalizeName(this)">
+                    <input type="email" id="email" name="email" class="input-field" placeholder="E-MAIL" required oninput="toLowerCaseEmail(this)">
+                </div>
+            </div>
+            <!-- Dados do Cliente -->
+            <div class="section">
+                <h2 class="section-title">Dados do Cliente 🏭</h2>
+                <div class="input-row">
+                    <input type="text" id="cliente" name="cliente" class="input-field" placeholder="CLIENTE" required oninput="toUpperCase(this)">
+                    <input type="text" id="codigo_cliente" name="codigo_cliente" class="input-field" placeholder="CÓDIGO CLIENTE" required>
+                </div>
+                <div class="input-row">
+                    <input type="text" id="responsavel" name="responsavel" class="input-field" placeholder="NOME DO RESPONSÁVEL" required oninput="capitalizeName(this)">
+                    <input type="text" id="contato" name="contato" class="input-field" placeholder="CONTATO" required oninput="formatPhone(this)">
+                    <input type="text" id="cidade_uf" name="cidade_uf" class="input-field" placeholder="CIDADE/UF" required oninput="capitalizeName(this)">
+                </div>
+            </div>
+            <!-- Origem -->
+            <div class="section">
+                <h2 class="section-title">Origem 🛒</h2>
+                <div class="radio-group">
+                    <label><input type="radio" name="origem" value="Milho" required onchange="updateProductOptions()"> 🌽 <strong>Milho</strong></label>
+                    <label><input type="radio" name="origem" value="Trigo" required onchange="updateProductOptions()"> 🌾 <strong>Trigo</strong></label>
+                    <label><input type="radio" name="origem" value="Macarrão" required onchange="updateProductOptions()"> 🍝 <strong>Macarrão</strong></label>
+                    <label><input type="radio" name="origem" value="Biscoito" required onchange="updateProductOptions()"> 🍪 <strong>Biscoito</strong></label>
+                </div>
+            </div>
+            <!-- Dados da Nota Fiscal e Produto -->
+            <div class="section">
+                <h2 class="section-title">Dados da Nota Fiscal e Produto 📑</h2>
+                <div class="input-row">
+                    <input type="text" id="nota_fiscal" name="nota_fiscal" class="input-field" placeholder="Nº DA NOTA FISCAL" required>
+                </div>
+                <div id="productRows">
+                    <div class="product-row">
+                        <select id="produto" name="produto[]" class="select-field" required>
+                            <option value="" disabled selected>Selecione o Produto</option>
+                        </select>
+                        <input type="text" name="lote[]" class="input-field" placeholder="LOTE" required>
+                        <input type="text" name="fabricacao[]" class="input-field" placeholder="FABRICAÇÃO (dd/mm/aaaa)" required oninput="formatDate(this)">
+                        <input type="text" name="vencimento[]" class="input-field" placeholder="VENCIMENTO (dd/mm/aaaa)" required oninput="formatDate(this)">
+                        <input type="number" name="quantidade[]" class="input-field" placeholder="QUANTIDADE (KG)" required>
+                        <button type="button" class="remove-product-btn" onclick="removeProduct(this)">❌</button>
+                    </div>
+                </div>
+                <button type="button" class="add-product-btn" onclick="addProduct()">➕ Adicionar Produto</button>
+            </div>
+            <!-- Descrição da Ocorrência -->
+            <div class="section">
+                <h2 class="section-title">Descrição da Ocorrência 📝</h2>
+                <div class="motivo-container">
+                    <select id="motivoSelect" name="motivo" required onchange="toggleMotivoField()">
+                        <option value="" disabled selected>Selecione o Motivo</option>
+                        <option value="Performance">Performance</option>
+                        <option value="Infestação">Infestação</option>
+                        <option value="Especificação">Especificação</option>
+                        <option value="Embalagem">Embalagem</option>
+                        <option value="Avaria">Avaria</option>
+                        <option value="Molhadura">Molhadura</option>
+                        <option value="Material Estranho">Material Estranho</option>
+                        <option value="Odor">Odor</option>
+                        <option value="Diferença de peso">Diferença de peso</option>
+                        <option value="Produto Errado">Produto Errado</option>
+                        <option value="Validade">Validade</option>
+                        <option value="Atraso">Atraso</option>
+                        <option value="Falta de Produto">Falta de Produto</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                    <input type="text" id="motivoInput" name="motivo" class="input-field" placeholder="Digite o motivo" style="display: none;">
+                    <button type="button" id="backButton" class="back-button" onclick="resetMotivoField()" style="display: none;">Voltar</button>
+                </div>
+                <textarea id="descricao" name="descricao" class="input-field" rows="3" placeholder="Descreva a ocorrência detalhadamente..." required></textarea>
+            </div>
+            <!-- Anexar Arquivo -->
+            <div class="section">
+                <h2 class="section-title">Anexar Evidências 📎</h2>
+                <label for="arquivo" class="file-input-label">Selecione um ou mais arquivos:</label>
+                <input type="file" id="arquivo" name="arquivo[]" class="file-input" multiple required>
+            </div>
+            <button type="submit" class="button">Enviar 🚀</button>
+        </form>
+    </div>
+
+    <script>
+        function updateProductOptions() {
+            const origem = document.querySelector('input[name="origem"]:checked')?.value;
+            const productSelects = document.querySelectorAll('select[name="produto[]"]');
+
+            productSelects.forEach(select => {
+                // Só atualiza se o select não tiver uma opção válida selecionada
+                if (!select.value || select.value === '') {
+                    select.innerHTML = '<option value="" disabled selected>Selecione o Produto</option>';
+
+                    if (origem === 'Milho') {
+                        const milhoOptions = [
+                            'CANJICA A GRANEL', 'CANJICA BIG BAG', 'CANJICA SC 25 KG', 'CANJICA SC 50KG', 'CANJICAO EXPORTACAO KG',
+                            'CANJICAO SC 50KG', 'CANJIQUINHA GROSSA A GRANEL', 'CANJIQUINHA GROSSA BIG BAG', 'CANJIQUINHA GROSSA SC 25KG',
+                            'CANJIQUINHA GROSSA SC 50 KG', 'CANJIQUINHA I SC 25KG', 'CANJIQUINHA I SC 50KG', 'CANJIQUINHA II BIG BAG',
+                            'CANJIQUINHA II SC 25KG', 'CANJIQUINHA II SC 50KG', 'CANJIQUINHA III BIG BAG', 'CANJIQUINHA III SC 25KG',
+                            'CANJIQUINHA III SC 50KG', 'FUBA BIG BAG', 'FUBA MIMOSO SC 50KG', 'FUBA MINERACAO BIG BAG', 'FUBA MINERACAO BIG BAG 800 KG',
+                            'FUBA SC 25KG', 'FUBA SC 50KG', 'GRITZ CERVEJEIRO A GRANEL', 'GRITZ CERVEJEIRO BIG BAG', 'GRITZ CERVEJEIRO SC 25KG',
+                            'GRITZ MINERACAO A GRANEL', 'GRITZ MINERACAO BIG BAG 800 KG', 'GRITZ SALGADINHO BIG BAG', 'GRITZ SALGADINHO SC 25 KG',
+                            'GRITZ SALGADINHO SC 50KG', 'SEMOLINA SC 25KG', 'SEMOLINA SC 50KG'
+                        ];
+                        milhoOptions.forEach(option => {
+                            select.innerHTML += `<option value="${option}">${option}</option>`;
+                        });
+                    } else if (origem === 'Trigo') {
+                        select.innerHTML += `
+                            <optgroup label="Domestica">
+                                <option value="BADOTTI ECONOMICA FRD PL 10X1KG">BADOTTI ECONOMICA FRD PL 10X1KG</option>
+                                <option value="BADOTTI ECONOMICA FRD PP 10X1KG">BADOTTI ECONOMICA FRD PP 10X1KG</option>
+                                <option value="BADOTTI FRD PL 10X1KG">BADOTTI FRD PL 10X1KG</option>
+                                <option value="BADOTTI FRD PP 10X1KG">BADOTTI FRD PP 10X1KG</option>
+                                <option value="BADOTTI TRADICIONAL FRD PP 5X5KG">BADOTTI TRADICIONAL FRD PP 5X5KG</option>
+                                <option value="BELLO SABORE PL 10 X1KG">BELLO SABORE PL 10 X1KG</option>
+                                <option value="BELLO SABORE PP 10X1KG">BELLO SABORE PP 10X1KG</option>
+                                <option value="CAMPESINA FRD PL 10X1 KG">CAMPESINA FRD PL 10X1 KG</option>
+                                <option value="CAMPESINA FRD PP 10X1KG">CAMPESINA FRD PP 10X1KG</option>
+                                <option value="FONTINI FRD PL 10X1KG">FONTINI FRD PL 10X1KG</option>
+                                <option value="FONTINI FRD PP 10X1KG">FONTINI FRD PP 10X1KG</option>
+                                <option value="VITORIOSA FRD PL 10X1KG">VITORIOSA FRD PL 10X1KG</option>
+                                <option value="VITORIOSA FRD PP 10X1KG">VITORIOSA FRD PP 10X1KG</option>
+                                <option value="VITORIOSA FRD PP 5X5KG">VITORIOSA FRD PP 5X5KG</option>
+                            </optgroup>
+                            <optgroup label="Profissional - Tipificadas">
+                                <option value="PASTEIS E MASSAS BADOTTI FRD PL 5X5KG">PASTEIS E MASSAS BADOTTI FRD PL 5X5KG</option>
+                                <option value="PIZZA BADOTTI FRD PL 5X5KG">PIZZA BADOTTI FRD PL 5X5KG</option>
+                                <option value="USO GERAL BADOTTI FRD PL 5X5KG">USO GERAL BADOTTI FRD PL 5X5KG</option>
+                                <option value="PASTEIS E MASSAS BADOTTI FRD PP 5X5KG">PASTEIS E MASSAS BADOTTI FRD PP 5X5KG</option>
+                                <option value="PIZZA BADOTTI FRD PP 5X5KG">PIZZA BADOTTI FRD PP 5X5KG</option>
+                            </optgroup>
+                            <optgroup label="Profissional - Panificação">
+                                <option value="BADOTTI SC 25KG">BADOTTI SC 25KG</option>
+                                <option value="BADOTTI SC 50KG">BADOTTI SC 50KG</option>
+                                <option value="BELLO SABORE SC 25KG">BELLO SABORE SC 25KG</option>
+                                <option value="NOVA SUPERIORE SC 50K">NOVA SUPERIORE SC 50K</option>
+                                <option value="NOVA SUPERIORE SC 25KG">NOVA SUPERIORE SC 25KG</option>
+                                <option value="VITORIOSA NACIONAL SC 25KG">VITORIOSA NACIONAL SC 25KG</option>
+                                <option value="VITORIOSA NACIONAL SC 50KG">VITORIOSA NACIONAL SC 50KG</option>
+                                <option value="BADOTTI MAXIMA SC 25KG">BADOTTI MAXIMA SC 25KG</option>
+                                <option value="BADOTTI ECONOMICA SC 50KG">BADOTTI ECONOMICA SC 50KG</option>
+                                <option value="CAMPESINA SC 25KG">CAMPESINA SC 25KG</option>
+                                <option value="CAMPESINA SC 50 KG">CAMPESINA SC 50 KG</option>
+                            </optgroup>
+                            <optgroup label="Industrial">
+                                <option value="INTEGRAL SC 25KG">INTEGRAL SC 25KG</option>
+                                <option value="PANETONE BIG BAG">PANETONE BIG BAG</option>
+                                <option value="PANETONE SC 50 KG">PANETONE SC 50 KG</option>
+                                <option value="BISCOITO BIG BAG">BISCOITO BIG BAG</option>
+                                <option value="BISCOITO SC 25KG">BISCOITO SC 25KG</option>
+                                <option value="BISCOITO SC 50KG">BISCOITO SC 50KG</option>
+                                <option value="INDUSTRIAL BIG BAG">INDUSTRIAL BIG BAG</option>
+                                <option value="INDUSTRIAL MOINHO REGIO SC 25KG">INDUSTRIAL MOINHO REGIO SC 25KG</option>
+                                <option value="INDUSTRIAL MOINHO REGIO SC 50KG">INDUSTRIAL MOINHO REGIO SC 50KG</option>
+                                <option value="MULTI USO I MOINHO REGIO SC 25KG">MULTI USO I MOINHO REGIO SC 25KG</option>
+                                <option value="MULTI USO I MOINHO REGIO BIG BAG">MULTI USO I MOINHO REGIO BIG BAG</option>
+                                <option value="MULTI USO I MOINHO REGIO SC 50KG">MULTI USO I MOINHO REGIO SC 50KG</option>
+                                <option value="MULTI USO II BIG BAG">MULTI USO II BIG BAG</option>
+                                <option value="MULTI USO II SC 50KG">MULTI USO II SC 50KG</option>
+                                <option value="MULTI USO II SC LISO 25KG">MULTI USO II SC LISO 25KG</option>
+                                <option value="PASTIFICIO BIG BAG">PASTIFICIO BIG BAG</option>
+                                <option value="PASTIFICIO MOINHO REGIO SC 25KG">PASTIFICIO MOINHO REGIO SC 25KG</option>
+                                <option value="PASTIFICIO SC 50KG">PASTIFICIO SC 50KG</option>
+                            </optgroup>
+                        `;
+                    } else if (origem === 'Macarrão') {
+                        const macarraoOptions = [
+                            'MACARRAO SEMOLADO ESPAGUETE VITORIOSA 20X400G', 'MACARRAO SEMOLA ESPAGUETE BADOTTI 20X400G'
+                        ];
+                        macarraoOptions.forEach(option => {
+                            select.innerHTML += `<option value="${option}">${option}</option>`;
+                        });
+                    } else if (origem === 'Biscoito') {
+                        const biscoitoOptions = [
+                            'BISCOITO LEITE CX 20 X 330', 'BISCOITO MAISENA CX 20 X 330', 'BISCOITO CREAM CRACKER CX 20 X 330'
+                        ];
+                        biscoitoOptions.forEach(option => {
+                            select.innerHTML += `<option value="${option}">${option}</option>`;
+                        });
+                    }
+                }
+            });
+        }
+
+        function addProduct() {
+            const productRowsContainer = document.getElementById('productRows');
+            const newProductRow = document.createElement('div');
+            newProductRow.classList.add('product-row');
+            newProductRow.innerHTML = `
+                <select name="produto[]" class="select-field" required>
+                    <option value="" disabled selected>Selecione o Produto</option>
+                </select>
+                <input type="text" name="lote[]" class="input-field" placeholder="LOTE" required>
+                <input type="text" name="fabricacao[]" class="input-field" placeholder="FABRICAÇÃO (dd/mm/aaaa)" required oninput="formatDate(this)">
+                <input type="text" name="vencimento[]" class="input-field" placeholder="VENCIMENTO (dd/mm/aaaa)" required oninput="formatDate(this)">
+                <input type="number" name="quantidade[]" class="input-field" placeholder="QUANTIDADE (KG)" required>
+                <button type="button" class="remove-product-btn" onclick="removeProduct(this)">❌</button>
+            `;
+            productRowsContainer.appendChild(newProductRow);
+            updateProductOptions(); // Atualiza apenas os selects sem seleção
+        }
+
+        function removeProduct(button) {
+            button.parentElement.remove();
+        }
+
+        function toggleMotivoField() {
+            const motivoSelect = document.getElementById('motivoSelect');
+            const motivoInput = document.getElementById('motivoInput');
+            const backButton = document.getElementById('backButton');
+            if (motivoSelect.value === 'Outros') {
+                motivoSelect.style.display = 'none';
+                motivoInput.style.display = 'block';
+                backButton.style.display = 'inline-block';
+                motivoInput.required = true;
+                motivoInput.focus();
+            } else {
+                motivoSelect.style.display = 'block';
+                motivoInput.style.display = 'none';
+                backButton.style.display = 'none';
+                motivoInput.required = false;
+                motivoInput.value = '';
+            }
+        }
+
+        function resetMotivoField() {
+            const motivoSelect = document.getElementById('motivoSelect');
+            const motivoInput = document.getElementById('motivoInput');
+            const backButton = document.getElementById('backButton');
+            motivoSelect.style.display = 'block';
+            motivoInput.style.display = 'none';
+            backButton.style.display = 'none';
+            motivoInput.required = false;
+            motivoInput.value = '';
+            motivoSelect.value = ''; // Volta para a opção padrão "Selecione o Motivo"
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const form = document.getElementById('ocorrenciaForm');
+            const formData = new FormData(form);
+            const arquivos = formData.getAll('arquivo[]');
+            const fileDataArray = [];
+            const fileNameArray = [];
+            arquivos.forEach(function(arquivo) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fileDataArray.push(e.target.result.split(',')[1]);
+                    fileNameArray.push(arquivo.name);
+                    if (fileDataArray.length === arquivos.length) {
+                        const motivoSelect = document.getElementById('motivoSelect');
+                        const motivoInput = document.getElementById('motivoInput');
+                        const motivoValue = motivoSelect.style.display === 'none' ? motivoInput.value : motivoSelect.value;
+                        const formValues = {
+                            representante: formData.get('representante'),
+                            email: formData.get('email'),
+                            cliente: formData.get('cliente'),
+                            codigo_cliente: formData.get('codigo_cliente'),
+                            responsavel: formData.get('responsavel'),
+                            contato: formData.get('contato'),
+                            cidade_uf: formData.get('cidade_uf'),
+                            origem: formData.get('origem'),
+                            nota_fiscal: formData.get('nota_fiscal'),
+                            produto: formData.getAll('produto[]'),
+                            lote: formData.getAll('lote[]'),
+                            fabricacao: formData.getAll('fabricacao[]'),
+                            vencimento: formData.getAll('vencimento[]'),
+                            quantidade: formData.getAll('quantidade[]'),
+                            motivo: motivoValue,
+                            descricao: formData.get('descricao'),
+                        };
+                        google.script.run
+                            .withSuccessHandler(function(response) {
+                                alert("Formulário enviado com sucesso!");
+                                form.reset();
+                                resetMotivoField(); // Reseta o campo motivo para o estado inicial
+                            })
+                            .withFailureHandler(function(error) {
+                                console.error('Erro ao enviar formulário:', error);
+                                alert("Ocorreu um erro ao enviar o formulário.");
+                            })
+                            .salvarDadosNaPlanilha(formValues);
+
+                        google.script.run
+                            .withSuccessHandler(function(response) {
+                                console.log("Arquivos enviados com sucesso:", response);
+                            })
+                            .uploadMultipleFiles(fileDataArray, fileNameArray);
+                    }
+                };
+                reader.readAsDataURL(arquivo);
+            });
+        }
+
+        function toUpperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        function capitalizeName(input) {
+            input.value = input.value.replace(/\b\w/g, function(match) {
+                return match.toUpperCase();
+            });
+        }
+
+        function toLowerCaseEmail(input) {
+            input.value = input.value.toLowerCase();
+        }
+
+        function formatPhone(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length <= 2) {
+                input.value = `(${value}`;
+            } else if (value.length <= 6) {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+            } else if (value.length <= 10) {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6, 10)}`;
+            } else {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7, 11)}`;
+            }
+        }
+
+        function formatDate(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            if (value.length <= 2) {
+                input.value = value;
+            } else if (value.length <= 4) {
+                input.value = `${value.slice(0, 2)}/${value.slice(2)}`;
+            } else if (value.length <= 8) {
+                input.value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+            }
+            if (value.length === 8) {
+                const day = parseInt(value.slice(0, 2));
+                const month = parseInt(value.slice(2, 4));
+                const year = parseInt(value.slice(4, 8));
+                if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 9999) {
+                    input.setCustomValidity("Data inválida");
+                } else {
+                    input.setCustomValidity("");
+                }
+            } else if (value.length > 0) {
+                input.setCustomValidity("Formato deve ser dd/mm/aaaa");
+            } else {
+                input.setCustomValidity("");
+            }
+        }
+    </script>
+</body>
+</html>
